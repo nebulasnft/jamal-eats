@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { transferNFTs, checkSeiVisionsNFTs } from '../seiWallet';
+import { transferNFTs, checkSeiVisionsNFTs } from '../seiWallet'; // Corrected path
 import { useNavigate } from 'react-router-dom';
 
 const MultiTransfer = () => {
