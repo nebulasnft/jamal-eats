@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { connectWallet, getWalletAddress } from '../seiWallet';
+import { connectWallet, getWalletAddress } from '../seiWallet'; // Corrected path
 
 const WalletConnect = () => {
-  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleConnect = async (walletType) => {
+    setLoading(true);
+    setError('');
     try {
       await connectWallet(walletType);
       const address = await getWalletAddress();
       if (address) {
-        setConnected(true);
         navigate('/verify');
+      } else {
+        setError('Failed to retrieve wallet address');
       }
     } catch (error) {
-      console.error("Failed to connect wallet", error);
+      setError(`Failed to connect wallet: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -25,6 +31,8 @@ const WalletConnect = () => {
       <button onClick={() => handleConnect('keplr')}>Connect Keplr</button>
       <button onClick={() => handleConnect('leap')}>Connect Leap</button>
       <button onClick={() => handleConnect('compass')}>Connect Compass</button>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
